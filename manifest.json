@@ -1,0 +1,14 @@
+{
+  "background_color": "hsv(224, 71%, 15%)",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "ai拍照姿势助手",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "ai美颜相机",
+  "start_url": "/index.html",
+  "theme_color": "#0b1226",
+  "id": "com.aicamera.app",
+  "description": "facemesh精准人脸美颜+姿势指导相机",
+  "lang": "zh"
+}

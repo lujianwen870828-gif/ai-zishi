@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI拍照姿势助手</title>
+<link rel="manifest" href="manifest.json">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0b1226;color:#fff;font-family:system-ui}
+#video{width:100%;max-width:720px;display:block;margin:10px auto;background:#222}
+.container{padding:12px;text-align:center}
+button{padding:10px 16px;margin:6px;border:0;border-radius:8px;background:#3b82f6;color:#fff;font-size:16px}
+.info{margin:10px 0;color:#ccc}
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>AI美颜相机 FaceMesh人脸检测</h2>
+  <div class="info">请授权摄像头</div>
+  <video id="video" autoplay playsinline></video>
+  <br>
+  <button id="startBtn">开启摄像头</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+<script>
+const video = document.getElementById('video');
+const startBtn = document.getElementById('startBtn');
+
+const faceMesh = new FaceMesh({
+  locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
+});
+faceMesh.setOptions({
+  maxNumFaces:1,
+  refineLandmarks:true,
+  minDetectionConfidence:0.6,
+  minTrackingConfidence:0.6
+});
+faceMesh.onResults(results=>{
+  console.log('人脸检测结果：',results);
+});
+
+startBtn.onclick = async ()=>{
+  const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}});
+  video.srcObject = stream;
+  const camera = new Camera(video,{
+    onFrame:async ()=>{ await faceMesh.send({image:video}) },
+    width:640,height:480
+  });
+  await camera.start();
+}
+</script>
+</body>
+</html>
